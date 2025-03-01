@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고객 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .customer-info, .purchase-info {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>고객 관리</h2>
+        <input type="text" id="customerName" placeholder="고객 이름 입력">
+        <input type="text" id="customerPhone" placeholder="전화번호 입력">
+        <input type="text" id="productName" placeholder="구매한 제품 입력">
+        <input type="number" id="productQuantity" placeholder="수량 입력" min="1">
+        <input type="date" id="purchaseDate">
+        <button onclick="addCustomer()">고객 추가</button>
+        <input type="text" id="searchInput" placeholder="검색 (이름, 전화번호, 제품, 날짜)" onkeyup="searchCustomer()">
+        <ul id="customerList"></ul>
+    </div>
+    
+    <script>
+        function addCustomer() {
+            let name = document.getElementById("customerName").value;
+            let phone = document.getElementById("customerPhone").value;
+            let product = document.getElementById("productName").value;
+            let quantity = document.getElementById("productQuantity").value;
+            let date = document.getElementById("purchaseDate").value;
+            
+            if (name === "" || phone === "" || product === "" || quantity === "" || date === "") {
+                alert("모든 필드를 입력해주세요.");
+                return;
+            }
+            
+            let li = document.createElement("li");
+            li.innerHTML = `
+                <div class="customer-info"><strong>${name}</strong> - ${phone}</div>
+                <div class="purchase-info">${product} (${quantity}개) - ${date}</div>
+                <button onclick="removeCustomer(this)">삭제</button>
+            `;
+            li.setAttribute("data-info", `${name.toLowerCase()} ${phone.toLowerCase()} ${product.toLowerCase()} ${date.toLowerCase()}`);
+            
+            document.getElementById("customerList").appendChild(li);
+            
+            document.getElementById("customerName").value = "";
+            document.getElementById("customerPhone").value = "";
+            document.getElementById("productName").value = "";
+            document.getElementById("productQuantity").value = "";
+            document.getElementById("purchaseDate").value = "";
+        }
+        
+        function removeCustomer(button) {
+            button.parentElement.remove();
+        }
+        
+        function searchCustomer() {
+            let searchValue = document.getElementById("searchInput").value.toLowerCase();
+            let customers = document.querySelectorAll("#customerList li");
+            
+            customers.forEach(customer => {
+                let info = customer.getAttribute("data-info");
+                if (info.includes(searchValue)) {
+                    customer.style.display = "flex";
+                } else {
+                    customer.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
